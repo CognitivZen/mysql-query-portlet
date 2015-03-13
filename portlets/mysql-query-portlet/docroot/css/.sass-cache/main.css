@@ -1,0 +1,74 @@
+.query-browser {
+  width: 100%; }
+
+.left-sec {
+  width: 29%;
+  float: left;
+  margin-right: 1%; }
+
+.heading {
+  background: url(../images/head-bg.png) no-repeat left top;
+  height: 25px;
+  display: block;
+  margin: 0 !important;
+  padding: 5px 0 0 10px;
+  color: #fff;
+  font-weight: bold; }
+
+.scheema {
+  border: solid 1px #0098fe;
+  display: block;
+  height: 500px;
+  padding: 10px;
+  overflow: auto;
+  text-transform: lowercase; }
+
+.scheema table {
+  width: 100%; }
+
+.query {
+  overflow: hidden;
+  margin-bottom: 10px; }
+
+.query-box {
+  border: solid 1px #0098fe;
+  float: left;
+  padding: 5px;
+  width: 90%; }
+
+.query-box textarea {
+  margin-bottom: 0; }
+
+.query-btn {
+  float: right;
+  width: 8%;
+  text-align: center;
+  padding-top: 10px; }
+
+.query-btn input {
+  background: url(../images/execute.png) no-repeat top center;
+  width: 48px;
+  height: 68px;
+  padding-top: 40px;
+  font-size: 12px;
+  border: 0; }
+
+.query-btn input:hover {
+  background: url(../images/execute-hover.png) no-repeat top center; }
+
+.result {
+  border: solid 1px #0098fe;
+  display: block;
+  padding: 10px; }
+
+.right-sec {
+  width: 70%;
+  float: left; }
+
+.scrollabletable {
+  width: 100% !important; }
+
+.headlabel {
+  display: block;
+  font-size: 20px; }
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/**|.svn/" kind="src" path="docroot/WEB-INF/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/lib/ext/portlet.jar"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/lib/ext/portal-service.jar">
+		<attributes>
+			<attribute name="javadoc_location" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/webapps/ROOT/WEB-INF/lib/alloy-taglib.jar"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/webapps/ROOT/WEB-INF/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/lib/ext/activation.jar"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/webapps/ROOT/WEB-INF/lib/jstl-api.jar"/>
+	<classpathentry kind="lib" path="F:/liferayFolder/portal_server/tomcat-7.0.42/webapps/ROOT/WEB-INF/lib/jstl-impl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/Downloads/jstl.jar/jstl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/Downloads/slf4j-1.7.10/slf4j-api-1.7.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/Downloads/slf4j-1.7.10/slf4j-simple-1.7.10.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
