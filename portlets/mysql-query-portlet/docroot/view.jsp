@@ -41,7 +41,7 @@
 <%@ page language="java" import="java.sql.*" %>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
 
-<%@page import="com.db.HibernateUtil"%>
+<%@page import="com.rknowsys.mysql.portlet.HibernateUtil"%>
 <%@page import="org.hibernate.Session"%>
 <%@page import="org.hibernate.SessionFactory" %>
  <%@page import="java.util.*" %>
