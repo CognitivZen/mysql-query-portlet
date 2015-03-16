@@ -36,7 +36,7 @@
 <%@ page import="com.liferay.portal.kernel.util.Constants" %>
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
 <%@ page session="true" %>
-<%@ page import="com.db.HibernateUtil" %>
+<%@ page import="com.rknowsys.mysql.portlet.HibernateUtil" %>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
 <%@ page language="java" import="java.sql.Connection" %>
 <%@ page language="java" import="java.sql.DatabaseMetaData" %>
@@ -123,12 +123,12 @@
 			}
 			else{
 					%>
-					<div style="font-weight:bold; color:green">you don't have permission to execute this query</div>
+					<div style="font-weight:bold; color:green">Sorry, but you do not have access to anything but (SELECT) - contact your admin for more privileges</div>
 					<%			
 			}
 			
 		}
-		else if(show_view.equals("Select"))
+		else if(show_view.equals("Select") || show_view.equalsIgnoreCase("Update"))
 			{
 				if(query.trim().startsWith("select") || query.trim().startsWith("SELECT")){//select operations
 					modifiedQuery = query;
