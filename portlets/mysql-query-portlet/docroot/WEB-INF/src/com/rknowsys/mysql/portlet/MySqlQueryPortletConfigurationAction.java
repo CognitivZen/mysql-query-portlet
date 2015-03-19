@@ -5,6 +5,7 @@ import javax.portlet.PortletConfig;
 import javax.portlet.PortletPreferences;
 
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
+import com.liferay.portal.kernel.util.Constants;
 public class MySqlQueryPortletConfigurationAction extends DefaultConfigurationAction{
 	
 	@Override
@@ -13,20 +14,18 @@ public class MySqlQueryPortletConfigurationAction extends DefaultConfigurationAc
             throws Exception {
 		
 		super.processAction(portletConfig, actionRequest, actionResponse);
-		
+		String test=actionRequest.getParameter(Constants.CMD);
+		System.out.println("Db pref="+test);
 		PortletPreferences prefs=actionRequest.getPreferences();
 		
-		
-        /*String select = ParamUtil.getString(actionRequest, "SelectUserOperation");
-        String portletResource = ParamUtil.getString(actionRequest,"portletResource");
-        System.out.println("select"+select);
-        PortletPreferences preferences = PortletPreferencesFactoryUtil.getPortletSetup(actionRequest, portletResource);
-        preferences.setValue("select", select);*/
         String show_addrs=prefs.getValue("SelectUserOperation", "true");
+        HibernateConnectionUtil hbc=new HibernateConnectionUtil();
+        if(test.equals("DBCONFIG")){
+        	hbc.getPreferencesValues(actionRequest);
+        }
         //String show_addrs2=prefs.getValue("UpdateUserOperation", "true");
         System.out.println("showLocationAddress=" + show_addrs +
                 " in ConfigurationActionImpl.processAction().");
 
-       
     }
 }
