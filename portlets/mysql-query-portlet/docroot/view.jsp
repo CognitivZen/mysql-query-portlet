@@ -67,7 +67,7 @@ Session dbconSession=null;
 	dbconSession=factory.openSession();
 	con = dbconSession.connection();
   }catch(Exception ex){%>
-  <h3>please choose DataBase Settings from Configuration Page</h3>
+  <h3>Please Choose DataBase Settings from Configuration Page</h3>
 	  
  <% }
 	boolean success = true;
