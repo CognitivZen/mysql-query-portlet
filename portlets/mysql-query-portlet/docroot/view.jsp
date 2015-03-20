@@ -41,7 +41,7 @@
 <%@ page language="java" import="java.sql.*" %>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
 
-<%@page import="com.rknowsys.mysql.portlet.HibernateUtil"%>
+<%@page import="com.rknowsys.mysql.portlet.HibernateConnectionUtil"%>
 <%@page import="org.hibernate.Session"%>
 <%@page import="org.hibernate.SessionFactory" %>
  <%@page import="java.util.*" %>
@@ -52,37 +52,28 @@
 <%@include file="init.jsp"%>
  --%>
 <head>
-<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
- -->
- 
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-
-<link type="text/css" rel="stylesheet" href="/<%=config.getServletContext().getServletContextName() %>/css/main.css" />
- 
- </head>
+	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="/<%=config.getServletContext().getServletContextName() %>/css/main.css" />
+</head>
 
 <portlet:defineObjects />
 
-<% 
-	//Getting Sessin object using HibernateUtil class
-	//Session dbconSession = HibernateUtil.getSessionFactory().openSession();
-	SessionFactory factory=HibernateUtil.getSessionFactory();
-	Session dbconSession=factory.openSession();
-	Connection con = dbconSession.connection();
+<% 	
+Connection con=null;
+Session dbconSession=null;
+  try{
+	SessionFactory factory=HibernateConnectionUtil.getSessionFactory();
+	dbconSession=factory.openSession();
+	con = dbconSession.connection();
+  }catch(Exception ex){%>
+  <h3>Please Choose DataBase Settings from Configuration Page</h3>
+	  
+ <% }
 	boolean success = true;
 	String errorMessage ="";
-	/*
-	UserInformation ui = (UserInformation)session.getAttribute("uinfo");
-	int userid = Integer.parseInt(request.getRemoteUser());
-	if (ui == null) {
-		ui = DataSource.getUserInformation(userid);
-		session.setAttribute("uinfo",ui);
-	}
-	*/
-	//out.println(GetterUtil.getBoolean("SelectUserOperation"));
 %>
+
 <div class="query-browser">
 	<div class="left-sec">
 		<p class="heading">Schemata</p>
@@ -90,12 +81,16 @@
 			<table id="tableName">
 				<%
 				
-				try{
-					Statement schemastmt=con.createStatement();//for getting schema's info
+		try{
+					Statement schemastmt=null;
+					ResultSet proceduresRS=null;
+					String schema_name=null;
+			if(con!=null){
+					 schemastmt=con.createStatement();//for getting schema's info
 					
 					ResultSet rs = schemastmt.executeQuery(" SELECT * FROM information_schema.SCHEMATA ");
 					while(rs.next()){
-						String schema_name = rs.getString("SCHEMA_NAME");
+						schema_name = rs.getString("SCHEMA_NAME");
 						if (schema_name.equals("lportal-22")) continue;
 				%>
 				<tr>
@@ -121,8 +116,9 @@
 				<%			}
 				Statement procedursstmt=con.createStatement();//for getting  procedures info	
 				String procedureQuery = "SHOW PROCEDURE STATUS where db='"+schema_name+"'";
-				ResultSet proceduresRS = procedursstmt.executeQuery(procedureQuery);//for stored procedures
-				
+				proceduresRS = procedursstmt.executeQuery(procedureQuery);//for stored procedures
+					}
+					
 				try{
 					String proc_name;
 					String columnReturnTypeName;
@@ -183,8 +179,10 @@
 					//com.mpp.Log.error(765, "", "", "", "Error in SQL Query Portlet "+e.toString());
 					
 				}finally{
+					try{
 					con = null;
 					dbconSession.close();//closing session.
+					}catch(Exception ex){}
 				}
 				//alert the actual error message
 				if (success == false){

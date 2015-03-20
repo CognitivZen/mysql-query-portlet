@@ -1,4 +1,3 @@
-
 <%
 /**
  * Copyright (c) 2000-2008 Liferay, Inc. All rights reserved.
@@ -36,7 +35,7 @@
 <%@ page import="com.liferay.portal.kernel.util.Constants" %>
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
 <%@ page session="true" %>
-<%@ page import="com.rknowsys.mysql.portlet.HibernateUtil" %>
+<%@ page import="com.rknowsys.mysql.portlet.HibernateConnectionUtil" %>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
 <%@ page language="java" import="java.sql.Connection" %>
 <%@ page language="java" import="java.sql.DatabaseMetaData" %>
@@ -51,14 +50,13 @@
 <%@page import="javax.portlet.ActionRequest" %>
 <%@page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %>
 <%@page import="javax.portlet.PortletPreferences" %>
-
+<jsp:directive.page import="java.text.*" />
 
 <head>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 </head>
 
-<jsp:directive.page import="java.text.*" />
 <portlet:defineObjects />
  <%
  	//PortletPreferences portletPreferences=null;
@@ -68,7 +66,7 @@
 %>
 
 <%
-	Session dbconSession = HibernateUtil.getSessionFactory().openSession();
+	Session dbconSession = HibernateConnectionUtil.getSessionFactory().openSession();
 	Connection con = dbconSession.connection();//getting connection oobject
 	
 	String query = (String) renderRequest.getAttribute("query");
@@ -88,6 +86,7 @@
 			{
 				Transaction tx = dbconSession.beginTransaction();
 				Query querystr = dbconSession.createSQLQuery(query);
+				System.out.println(query);
 				querystr.executeUpdate();
 				tx.commit();
 				if(query.trim().startsWith("update") || query.trim().startsWith("UPDATE") ) {
