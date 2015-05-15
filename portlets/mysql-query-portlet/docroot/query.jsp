@@ -60,79 +60,135 @@
 <portlet:defineObjects />
  <%
  	//PortletPreferences portletPreferences=null;
- 	String show_view=GetterUtil.getString(portletPreferences.getValue("SelectUserOperation", StringPool.TRUE));
+ 	String show_view=GetterUtil.getString(portletPreferences.getValue("SelectUserOperation", "Select"));
  	System.out.println(show_view);
 	
 %>
 
 <%
-	Session dbconSession = HibernateConnectionUtil.getSessionFactory().openSession();
-	Connection con = dbconSession.connection();//getting connection oobject
-	
-	String query = (String) renderRequest.getAttribute("query");
+	String query=null;
+	Session dbconSession=null;
+	Connection con=null;
+	try{
+		dbconSession = HibernateConnectionUtil.getSessionFactory().openSession();
+		System.out.println("dbconsession in query.jsp=="+dbconSession);
+		con = dbconSession.connection();//getting connection oobject
+		
+		query = (String) renderRequest.getAttribute("query");
+		System.out.println("query is=="+query);
+	}catch(Exception e){
+		%>
+		<h3>Please Choose database settings from Configuration page</h3>
+		<%
+	}
 	ResultSet rs=null;
 	Statement stmt=null;
 	String modifiedQuery = null;
 	boolean success = true;
 	String errorMessage = "";
-
-		//checking for update and delete operations
+	
+	// For query equals Ignore case  
+	String updateStr="update";
+	String deleteStr="delete";
+	String dropStr="drop";
+	String createStr="create";
+	String insertStr="insert";
+	String alterStr="alter";
+	String s[]=query.split(" ");
+	boolean flagUp=updateStr.equalsIgnoreCase(s[0]);
+	boolean flagDe=deleteStr.equalsIgnoreCase(s[0]);
+	boolean flagDr=dropStr.equalsIgnoreCase(s[0]);
+	boolean flagCr=createStr.equalsIgnoreCase(s[0]);
+	boolean flagIn=insertStr.equalsIgnoreCase(s[0]);
+	boolean flagAl=alterStr.equalsIgnoreCase(s[0]);
+	
+	//checking for update and delete operations
 	try{
-		if(query.trim().startsWith("delete") || query.trim().startsWith("DELETE") || query.trim().startsWith("update") ||query.trim().startsWith("UPDATE") ||
+		if(query.trim().startsWith("delete") || query.trim().startsWith("DELETE") || query.trim().startsWith("update") ||query.trim().startsWith("UPDATE") || query.trim().startsWith("Update") || flagUp || flagDe || flagDr || flagCr || flagIn || flagAl ||
 			query.trim().startsWith("drop") || query.trim().startsWith("DROP") || query.trim().startsWith("insert") || query.trim().startsWith("INSERT") ||
-			query.trim().startsWith("create") || query.trim().startsWith("CREATE") )
+			query.trim().startsWith("create") || query.trim().startsWith("CREATE") || query.trim().startsWith("alter") || query.trim().startsWith("ALTER"))
 		{	
-			if(show_view.equals("Update"))
+			if(show_view.equalsIgnoreCase("Update"))
 			{
 				Transaction tx = dbconSession.beginTransaction();
-				Query querystr = dbconSession.createSQLQuery(query);
+				Query querystr = null;
+				int num=0;
 				System.out.println(query);
-				querystr.executeUpdate();
+				stmt=con.createStatement();
+				num=stmt.executeUpdate(query);
+				System.out.println(num);
 				tx.commit();
-				if(query.trim().startsWith("update") || query.trim().startsWith("UPDATE") ) {
+				
+				if((query.trim().startsWith("create") || query.trim().startsWith("CREATE")) && query.substring(7, 15).equals("database")){
+					%>
+					<div style="font-weight:bold; color:green">Database created  successfully!</div>
+				<%
+				}else if((query.trim().startsWith("drop") || query.trim().startsWith("DROP") || flagDr) && query.substring(5, 13).equals("database")){
+					%>
+					<div style="font-weight:bold; color:green">Database Dropped successfully!</div>
+				<%
+				}
+				else if((query.trim().startsWith("update") || query.trim().startsWith("UPDATE") || query.trim().startsWith("Update") || flagUp) && num!=0) {
 				%>
 					<div style="font-weight:bold; color:green">Query updated  successfully!</div>
 				<%		   
 	
 				}
-				else if(query.trim().startsWith("create") || query.trim().startsWith("CREATE")){
+				else if(query.trim().startsWith("create") || query.trim().startsWith("CREATE") || flagCr){
 													
 				%>
 					<div style="font-weight:bold; color:green">Table Created Successfully!</div>
 				<%	
 				
-				} else if(query.trim().startsWith("delete") || query.trim().startsWith("DELETE")){
+				} else if((query.trim().startsWith("delete") || query.trim().startsWith("DELETE") || flagDe) && num!=0){
 				%>
 					<div style="font-weight:bold; color:green">Query deleted successfully!</div>
 				<%
 				
 				}
-				else if(query.trim().startsWith("insert") || query.trim().startsWith("INSERT")){
+				else if(query.trim().startsWith("insert") || query.trim().startsWith("INSERT") || flagIn){
 				%>
 					<div style="font-weight:bold; color:green">Query inserted successfully!</div>
 				<%	
 				
 				}
-				else{
+				else if(query.trim().startsWith("drop") || query.trim().startsWith("DROP") || flagDr){
 				%>
 					<div style="font-weight:bold; color:green">Query dropped successfully!</div>
 				<%
 				
 				}
-			}
+				else if(query.trim().startsWith("alter") || query.trim().startsWith("ALTER") || flagAl){
+				%>
+					<div style="font-weight:bold; color:green">Query altered successfully!</div>
+				<%
+				}
+				else{
+				%>
+				<div style="font-weight:bold; color:green">record is not available </div>
+				<% }%>
+			<% }
 			else{
 					%>
 					<div style="font-weight:bold; color:green">Sorry, but you do not have access to anything but (SELECT) - contact your admin for more privileges</div>
 					<%			
-			}
+				}
 			
 		}
-		else if(show_view.equals("Select") || show_view.equalsIgnoreCase("Update"))
+		else if(show_view.equalsIgnoreCase("Select") || show_view.equalsIgnoreCase("Update"))
 			{
-				if(query.trim().startsWith("select") || query.trim().startsWith("SELECT")){//select operations
+			String str="select";
+			String descStr="desc";
+			String s1[]=query.split(" ");
+			boolean flag1=str.equalsIgnoreCase(s1[0]);
+			boolean descFlag=descStr.equalsIgnoreCase(s1[0]);
+			
+				if(query.trim().startsWith("select") || query.trim().startsWith("SELECT") || flag1 || query.trim().startsWith("desc") || descFlag){//select operations
 					modifiedQuery = query;
 				}else if(query.trim().startsWith("call") || query.trim().startsWith("CALL")) {//calling the procedures
 					modifiedQuery = query;
+				}else{
+					%><div style="font-weight:bold; color:green">Please enter a valid sql query</div><%
 				}
 		
 				if(modifiedQuery != null){
@@ -190,37 +246,50 @@
 <%
 		}
 	}
-		else
-		{
-			%>
-			<div style="font-weight:bold; color:green">you don't have permission to execute this query</div>
-			<%	
-			}
+		else{
+			%><div style="font-weight:bold; color:green">you don't have permission to execute this query</div><%
+		}
 		}
 		catch(SQLException e){
-		success = false;
-		e.printStackTrace();
-		errorMessage = "Unable to execute query";
-		
-	}
-	catch(Exception e){
-		success = false;
-		e.printStackTrace();
-		errorMessage = e.getMessage();
-	}
-	finally{
+			System.out.println("In sql exception");
+			success = false;
+			//errorMessage = "Unable to execute query";
+			String exMsg="Message from mysql Database";
+			String exEqlState="Exception";
+			SQLException mysqlEx=new SQLException(exMsg,exEqlState);
+			e.setNextException(mysqlEx);
+				System.out.println("Error msg: "+e.getMessage());
+				//alert(e.getMessage());
+				//errorMessage=e.getMessage();
+				%> <div style="font-weight:bold; color:green"><%=e.getMessage() %></div><%
+
+		}
+		catch(Exception e){
+			System.out.println("In  exception");
+			success = false;
+			errorMessage = e.getMessage();
+			String exMsg="Message from mysql Database";
+			String exEqlState="Exception";
+			SQLException mysqlEx=new SQLException(exMsg,exEqlState);
+			//e.setNextException(mysqlEx);
+				System.out.println("Error msg: "+e.getMessage());
+				//errorMessage=e.getMessage();
+				mysqlEx.getMessage();
+				%> <div style="font-weight:bold; color:green"><%=mysqlEx.getMessage() %></div><%
+		}
+		finally{
 	
-		if(dbconSession != null){
-			con = null;
-			dbconSession.close();
-		}		
-	}
+			if(dbconSession != null){
+				con = null;
+				dbconSession.close();
+			}		
+		}
 	
 	//alert the actual error message
 	if(success == false){
 %>
 <script type="text/javascript">
-	alert('<%=errorMessage %>');
+	<%-- alert('<%=errorMessage %>'); --%>
 </script>
 <%
 	}

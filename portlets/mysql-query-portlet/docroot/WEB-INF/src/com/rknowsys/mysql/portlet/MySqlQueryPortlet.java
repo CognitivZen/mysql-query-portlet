@@ -29,12 +29,13 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import com.liferay.portal.kernel.util.ParamUtil;
 
 public class MySqlQueryPortlet extends GenericPortlet {
@@ -82,21 +83,25 @@ public static final String svnRevision =  "$Id: JSPPortlet.java 3160 2012-07-21 
 		throws IOException, PortletException {
 		if (ParamUtil.getString(req, "action").equals("Query")) {
 			include("/query.jsp", req, res);
-		}else	
-		include(viewJSP, req, res);
+		}else {
+			System.out.println("from doView().");
+			PortletPreferences preferences = req.getPreferences();
+        	System.out.println("JDBC URL from preference obj in doView: "+preferences.getValue("jdbc_url", ""));
+        	String jdbcURL=preferences.getValue("jdbc_url","");
+			String userName=preferences.getValue("uname","");
+			String password=preferences.getValue("pwd","");	
+			if(!jdbcURL.isEmpty() && !userName.isEmpty() && !password.isEmpty() && HibernateConnectionUtil.getSessionFactory() == null) {
+				HibernateConnectionUtil.getPreferencesValues(jdbcURL,userName,password);
+			}
+			include(viewJSP, req, res);
+		}
 	}
 
 	public void processAction(ActionRequest req, ActionResponse res)
 		throws IOException, PortletException {
 				
-		//PortletSession session = req.getPortletSession();
-		/*UserInformation ui = (UserInformation) session.getAttribute("uinfo", PortletSession.APPLICATION_SCOPE);
-		if (ui == null) {
-			ui = DataSource.getUserInformation(Integer.parseInt(req.getRemoteUser()));
-			session.setAttribute("uinfo", ui, PortletSession.APPLICATION_SCOPE);
-		}*/
 		String s = req.getParameter("action");
-
+		System.out.println("Action: "+s);
 		if (ParamUtil.getString(req, "action").equalsIgnoreCase(EXECUTE)) {
 			String query = ParamUtil.getString(req, "query");
 			req.setAttribute("query", query);

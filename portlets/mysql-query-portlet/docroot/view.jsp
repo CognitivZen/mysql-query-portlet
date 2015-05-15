@@ -45,12 +45,7 @@
 <%@page import="org.hibernate.Session"%>
 <%@page import="org.hibernate.SessionFactory" %>
  <%@page import="java.util.*" %>
-<%--<%@page import="java.text.*" %>
-<%@page import="com.liferay.portal.model.User"%>
-<%@page import="com.liferay.portal.service.GroupLocalServiceUtil"%>
-<%@page import="com.liferay.portal.service.UserLocalService"%>
-<%@include file="init.jsp"%>
- --%>
+
 <head>
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
@@ -58,7 +53,7 @@
 </head>
 
 <portlet:defineObjects />
-
+<div class="clearfix">
 <% 	
 Connection con=null;
 Session dbconSession=null;
@@ -66,7 +61,8 @@ Session dbconSession=null;
 	SessionFactory factory=HibernateConnectionUtil.getSessionFactory();
 	dbconSession=factory.openSession();
 	con = dbconSession.connection();
-  }catch(Exception ex){%>
+  }catch(Exception ex){
+  %>
   <h3>Please Choose DataBase Settings from Configuration Page</h3>
 	  
  <% }
@@ -175,7 +171,6 @@ Session dbconSession=null;
 						}
 					}	         
 				}catch(Exception e){
-					e.printStackTrace();
 					//com.mpp.Log.error(765, "", "", "", "Error in SQL Query Portlet "+e.toString());
 					
 				}finally{
@@ -226,8 +221,9 @@ Session dbconSession=null;
 			var queryEle = jQuery('#<portlet:namespace/>_query');
 			var query = queryEle.val();
 			if(query ==	""){
-				alert("enter-a-valid-sql-query" );
-			}else if (query.indexOf(".") < 0){
+				alert("Enter a Valid SQL Query");
+			}else if (query.indexOf(".") < 0 && (query.startsWith("select") || query.startsWith("insert") || query.trim().substring(7).startsWith("table") || query.startsWith("delete") ||
+						query.startsWith("update") || query.startsWith("alter") || query.trim().substring(5).startsWith("table"))){
 				alert("No Database selected, Please select schema" );
 			}else{
 				var url = '<portlet:actionURL windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>" />';
@@ -267,5 +263,4 @@ Session dbconSession=null;
 		}		
 	}
 </script>
-
-  
+</div>

@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletSession;
+import javax.servlet.RequestDispatcher;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -20,25 +22,25 @@ public class HibernateConnectionUtil implements ConnectionProvider {
 
 	private static SessionFactory factory = null;
 	
-	public void getPreferencesValues(ActionRequest actionRequest)
+	public static void getPreferencesValues(String jdbcURL,String userName, String password)
 	{
 		try{
-			String jdbcURL=actionRequest.getParameter("jdbc_url");
-			String userName=actionRequest.getParameter("uname");
-			String password=actionRequest.getParameter("pwd");	
 			
-			System.out.println("JDBCURL="+jdbcURL);
-			System.out.println("USERNAME="+userName);
-			System.out.println("PASSWORD="+password);
-			PortletPreferences portletPreferences=actionRequest.getPreferences();
+			
+			//PortletPreferences portletPreferences=actionRequest.getPreferences();
 			Configuration cfg = new Configuration();
-			cfg.configure("hibernate.cfg.xml").setProperty("hibernate.connection.url", jdbcURL).setProperty("hibernate.connection.username", userName)
+			
+			cfg.configure("/com/rknowsys/mysql/portlet/hibernate.cfg.xml").setProperty("hibernate.connection.url", jdbcURL).setProperty("hibernate.connection.username", userName)
 			.setProperty("hibernate.connection.password", password).setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+			System.out.println("password=="+password);
 			factory = cfg.buildSessionFactory();
-			System.out.println(factory);
-			String show_view=GetterUtil.getString(portletPreferences.getValue("SelectUserOperation", StringPool.TRUE));
-			System.out.println("in getPV method="+show_view);
+			System.out.println("Session Factory object== "+factory);
+			//String show_view=GetterUtil.getString(portletPreferences.getValue("SelectUserOperation", StringPool.TRUE));
+			//System.out.println("in getPV method="+show_view);
+			
+			
 		}catch(Exception ex){
+			ex.printStackTrace();
 			System.out.println("plaese select database settings from configuration page");
 		}
 	}
