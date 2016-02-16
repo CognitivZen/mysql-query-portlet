@@ -53,7 +53,7 @@
   font-size: 12px;
   border: 0; }
 
-.query-btn input:hover {
+.query-btn input:hover .query-btn input:focus {
   background: url(../images/execute-hover.png) no-repeat top center; }
 
 .result {
@@ -71,4 +71,7 @@
 .headlabel {
   display: block;
   font-size: 20px; }
+
+#adjust td {
+  text-align: justify; }
 
